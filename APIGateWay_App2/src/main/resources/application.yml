@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+              allowedOrigins: "*"
+              allowedMethods: "*"
+              allowedHeaders: "*"
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/customer/**,/admin/**,/manager/**,/employee/**
+          filters:
+          - AuthenticationFilter
+        - id: transaction-service
+          uri: lb://transaction-service
+          predicates:
+            - Path=/transaction/**,/transactionByManager/**,/giftCard/**,/transactionByEmployee/**
+          filters:
+          - AuthenticationFilter
+        - id: locker-service
+          uri: lb://locker-service
+          predicates:
+            - Path=/lockerAdmin/**,/lockerCustomer/**,/lockerEmployee/**,/lockerManager/**
+          filters:
+          - AuthenticationFilter
+        - id: creditcard-service
+          uri: lb://creditcard-service
+          predicates:
+            - Path=/creditCard/customer/**,/creditCard/employee/**,/creditCard/manager/**
+          filters:
+          - AuthenticationFilter
+        - id: loan-service
+          uri: lb://loan-service
+          predicates:
+            - Path=/customerLoan/**,/employeeLoan/**,/managerLoan/**
+          filters:
+          - AuthenticationFilter
+        - id: gift-service
+          uri: lb://gift-service
+          predicates:
+            - Path=/customergift/**
+          filters:
+          - AuthenticationFilter
+        - id: login-service
+          uri: lb://login-service
+          predicates:
+            - Path=/**
+       
